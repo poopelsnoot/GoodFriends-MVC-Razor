@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppGoodFriendsWebApi", "App
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{00F3F8F0-4980-4B7F-BBB1-AAF26CAB1193}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppGoodFriendsRazor", "AppGoodFriendsRazor\AppGoodFriendsRazor.csproj", "{4A1C27C7-3629-4FF2-95D8-1A84459D676D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{19B8EAA2-41B0-4B05-A9D6-42324502C5F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19B8EAA2-41B0-4B05-A9D6-42324502C5F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19B8EAA2-41B0-4B05-A9D6-42324502C5F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1C27C7-3629-4FF2-95D8-1A84459D676D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1C27C7-3629-4FF2-95D8-1A84459D676D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1C27C7-3629-4FF2-95D8-1A84459D676D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1C27C7-3629-4FF2-95D8-1A84459D676D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
