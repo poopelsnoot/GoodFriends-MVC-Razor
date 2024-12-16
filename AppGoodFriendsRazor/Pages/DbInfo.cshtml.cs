@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Models.DTO;
 using Services;
 
 namespace MyApp.Namespace
@@ -9,7 +10,9 @@ namespace MyApp.Namespace
         readonly IFriendsService _service;
         public async Task<IActionResult> OnGet()
         {
-            var dbInfo = await _service.InfoAsync;
+            GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
+
+            var nrFriendsSweden = dbInfo.Friends.Where(f => f.Country == "Sweden").Sum(f => f.NrFriends);
             return Page();
         }
         
