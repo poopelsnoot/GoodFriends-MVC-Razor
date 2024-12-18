@@ -15,10 +15,17 @@ namespace MyApp.Namespace
         {
             GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
 
-            foreach (var country in dbInfo.Friends.Select(f => f.Country).Distinct().Where(c => !string.IsNullOrEmpty(c)))
+            foreach (var country in dbInfo.Friends.Select(f => f.Country).Distinct())
             {
-                FriendsByCountry[country] = dbInfo.Friends.Where(f => f.Country == country).Sum(f => f.NrFriends);
-                CitiesByCountry[country] = dbInfo.Friends.Count(f => f.Country == country);
+                if (string.IsNullOrEmpty(country))
+                {
+                    FriendsByCountry["Unknown"] = dbInfo.Friends.Where(f => string.IsNullOrEmpty(f.Country)).Sum(f => f.NrFriends);
+                }
+                else 
+                {
+                    FriendsByCountry[country] = dbInfo.Friends.Where(f => f.Country == country).Sum(f => f.NrFriends);
+                    CitiesByCountry[country] = dbInfo.Friends.Count(f => f.Country == country);
+                }
             }
 
             return Page();
