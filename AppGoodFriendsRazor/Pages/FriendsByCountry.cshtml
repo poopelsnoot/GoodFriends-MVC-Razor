@@ -29,7 +29,7 @@
                 <a class="text-decoration-none" asp-area="" asp-page="/FriendsByCity" asp-route-country="@country">
                     <div class="col">
                         <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('@Url.Content("~/img/" + country + ".jpg")');">
-                            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <div class="d-flex flex-column h-100 p-5 pb-3 text-white" style="text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;">
                                 <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">@country</h3>
                                 <p class="fs-5">@Model.FriendsByCountry[country] Friends in @Model.CitiesByCountry[country] cities</p>
                             </div>
