@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Services;
 using Models.DTO;
+using Models;
 
 namespace MyApp.Namespace
 {
@@ -17,17 +18,31 @@ namespace MyApp.Namespace
             GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
             ChosenCountry = country;
 
-            var listAddressesInCountry = await _service.ReadAddressesAsync(true, false, country, 0, int.MaxValue);
-            var listCitiesInCountry = listAddressesInCountry.PageItems.Where(f => f.Country == country).Select(f => f.City).Distinct().ToList();
-
-            foreach (var city in listCitiesInCountry)
+            if (country != "Unknown") 
             {
-                FriendsByCity[city] = dbInfo.Friends
-                    .Where(f => f.City == city)
-                    .Sum(f => f.NrFriends);
-                PetsByCity[city] = dbInfo.Pets
-                    .Where(f => f.City == city)
-                    .Sum(f => f.NrPets);
+                var listAddressesInCountry = await _service.ReadAddressesAsync(true, false, country, 0, int.MaxValue);
+                var listCitiesInCountry = listAddressesInCountry.PageItems.Where(f => f.Country == country).Select(f => f.City).Distinct().ToList();
+                foreach (var city in listCitiesInCountry)
+                {
+                    FriendsByCity[city] = dbInfo.Friends
+                        .Where(f => f.City == city)
+                        .Sum(f => f.NrFriends);
+                    PetsByCity[city] = dbInfo.Pets
+                        .Where(f => f.City == city)
+                        .Sum(f => f.NrPets);
+                }
+            }
+            else 
+            { 
+                var friendList = await _service.ReadFriendsAsync(true, false, "", 0, int.MaxValue);
+                FriendsByCity["Unknown"] = friendList.PageItems
+                    .Where(f => f.Address == null)
+                    .ToList().Count();
+                PetsByCity["Unknown"] = friendList.PageItems
+                    .Where(f => f.Address == null)
+                    .SelectMany(f => f.Pets)
+                    .ToList()
+                    .Count();
             }
 
             return Page();
