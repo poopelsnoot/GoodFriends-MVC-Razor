@@ -10,33 +10,18 @@
     <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
 
         @foreach (var country in Model.FriendsByCountry.Keys)
-        {
-            @if (country == "Unknown") 
-            { 
-                <a class="text-decoration-none" asp-area="" asp-page="/FriendsByCity" asp-route-country="@country">
-                    <div class="col">
-                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('@Url.Content("~/img/" + country + ".jpg")');">
-                            <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                                <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">@country</h3>
-                                <p class="fs-5">@Model.FriendsByCountry[country] Friends</p>
-                            </div>
+        {   
+            <a class="text-decoration-none" asp-area="" asp-page="/FriendsByCity" asp-route-country="@country">
+                <div class="col">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('@Url.Content("~/img/" + country + ".jpg")');">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white" style="text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;">
+                            <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">@country</h3>
+                            @if (country == "Unknown") { <p class="fs-5">@Model.FriendsByCountry[country] Friends</p> }
+                            else { <p class="fs-5">@Model.FriendsByCountry[country] Friends in @Model.CitiesByCountry[country] cities</p> }
                         </div>
                     </div>
-                </a>
-            }
-            else
-            {
-                <a class="text-decoration-none" asp-area="" asp-page="/FriendsByCity" asp-route-country="@country">
-                    <div class="col">
-                        <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('@Url.Content("~/img/" + country + ".jpg")');">
-                            <div class="d-flex flex-column h-100 p-5 pb-3 text-white" style="text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;">
-                                <h3 class="pt-1 mt-1 mb-4 display-6 lh-1 fw-bold">@country</h3>
-                                <p class="fs-5">@Model.FriendsByCountry[country] Friends in @Model.CitiesByCountry[country] cities</p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            }
+                </div>
+            </a>
         }
     </div>
 </div>
