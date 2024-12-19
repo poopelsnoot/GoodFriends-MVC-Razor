@@ -17,10 +17,18 @@ namespace MyApp.Namespace
             GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
             ChosenCountry = country;
 
-            foreach (var city in dbInfo.Friends.Where(f => f.Country == country).Select(f => f.City).Distinct().Where(c => !string.IsNullOrEmpty(c)))
+            foreach (var city in dbInfo.Friends.Where(f => f.Country == country).Select(f => f.City).Distinct())
             {
-                FriendsByCity[city] = dbInfo.Friends.Where(f => f.City == city).Sum(f => f.NrFriends);
-                PetsByCity[city] = dbInfo.Pets.Where(f => f.City == city).Sum(f => f.NrPets);
+                if (string.IsNullOrEmpty(city))
+                {
+                    FriendsByCity["Unknown"] = dbInfo.Friends.Where(f => string.IsNullOrEmpty(f.City)).Sum(f => f.NrFriends);
+                    PetsByCity["Unknown"] = dbInfo.Pets.Where(f => string.IsNullOrEmpty(f.City)).Sum(f => f.NrPets);
+                }
+                else 
+                {
+                    FriendsByCity[city] = dbInfo.Friends.Where(f => f.City == city).Sum(f => f.NrFriends);
+                    PetsByCity[city] = dbInfo.Pets.Where(f => f.City == city).Sum(f => f.NrPets);
+                }
             }
 
             return Page();
