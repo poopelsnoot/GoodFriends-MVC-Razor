@@ -19,12 +19,16 @@ namespace MyApp.Namespace
             {
                 if (string.IsNullOrEmpty(country))
                 {
-                    FriendsByCountry["Unknown"] = dbInfo.Friends.Where(f => string.IsNullOrEmpty(f.Country)).Sum(f => f.NrFriends);
+                    var friendList = await _service.ReadFriendsAsync(true, false, "", 0, int.MaxValue);
+                    FriendsByCountry["Unknown"] = friendList.PageItems.Where(f => f.Address == null).ToList().Count();
                 }
                 else 
                 {
-                    FriendsByCountry[country] = dbInfo.Friends.Where(f => f.Country == country).Sum(f => f.NrFriends);
-                    CitiesByCountry[country] = dbInfo.Friends.Count(f => f.Country == country);
+                    FriendsByCountry[country] = dbInfo.Friends
+                        .Where(f => f.Country == country && !string.IsNullOrEmpty(f.City))
+                        .Sum(f => f.NrFriends);
+                    CitiesByCountry[country] = dbInfo.Friends
+                        .Count(f => f.Country == country && !string.IsNullOrEmpty(f.City));
                 }
             }
 
