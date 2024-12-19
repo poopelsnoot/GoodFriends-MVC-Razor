@@ -18,20 +18,16 @@ namespace MyApp.Namespace
             ChosenCountry = country;
 
             var listAddressesInCountry = await _service.ReadAddressesAsync(true, false, country, 0, int.MaxValue);
-            var nrFriends = listAddressesInCountry.PageItems.SelectMany(a => a.Friends).Count();
+            var listCitiesInCountry = listAddressesInCountry.PageItems.Where(f => f.Country == country).Select(f => f.City).Distinct().ToList();
 
-            foreach (var city in dbInfo.Friends.Where(f => f.Country == country).Select(f => f.City).Distinct())
+            foreach (var city in listCitiesInCountry)
             {
-                if (string.IsNullOrEmpty(city))
-                {
-                    FriendsByCity["Unknown"] = dbInfo.Friends.Where(f => string.IsNullOrEmpty(f.City) && f.Country == country).Sum(f => f.NrFriends);
-                    PetsByCity["Unknown"] = dbInfo.Pets.Where(f => string.IsNullOrEmpty(f.City) && f.Country == country).Sum(f => f.NrPets);
-                }
-                else 
-                {
-                    FriendsByCity[city] = dbInfo.Friends.Where(f => f.City == city).Sum(f => f.NrFriends);
-                    PetsByCity[city] = dbInfo.Pets.Where(f => f.City == city).Sum(f => f.NrPets);
-                }
+                FriendsByCity[city] = dbInfo.Friends
+                    .Where(f => f.City == city)
+                    .Sum(f => f.NrFriends);
+                PetsByCity[city] = dbInfo.Pets
+                    .Where(f => f.City == city)
+                    .Sum(f => f.NrPets);
             }
 
             return Page();
