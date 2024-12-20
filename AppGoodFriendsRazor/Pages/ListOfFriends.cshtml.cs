@@ -13,16 +13,17 @@ namespace MyApp.Namespace
         public string ChosenCity { get; set; }
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
-        public async Task<IActionResult> OnGet(string city, int page = 1)
+        public async Task<IActionResult> OnGet(string city, int pageNumber = 1)
         {
             GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
             ChosenCity = city;
-            CurrentPage = page;
+            CurrentPage = pageNumber;
 
             var addresses = await _service.ReadAddressesAsync(true, false, city, 0, int.MaxValue);
-            FriendsList = addresses.PageItems.SelectMany(a => a.Friends).Skip((page-1) * 10).Take(10).ToList();
+            var AllFriends = addresses.PageItems.SelectMany(a => a.Friends).ToList();
 
-            TotalPages = (int)Math.Ceiling((double)FriendsList.Count() / 10);
+            TotalPages = (int)Math.Ceiling((double)AllFriends.Count() / 10);
+            FriendsList = AllFriends.Skip((pageNumber-1) * 10).Take(10).ToList();
 
             return Page();
         }
