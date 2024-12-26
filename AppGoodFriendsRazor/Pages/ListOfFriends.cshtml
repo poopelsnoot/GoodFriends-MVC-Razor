@@ -29,18 +29,22 @@
     {
         <div class="row mb-2 text-center">
             <div class="col-md-4 themed-grid-col">
-            @friend.FirstName @friend.LastName
-            <div class="col-md-16">@friend.Email</div>
+                @friend.FirstName @friend.LastName
+                <div class="col-md-16">@friend.Email</div>
             </div>
-            <div class="col-md-4 themed-grid-col">
-            @friend.Address.StreetAddress
-            <div class="col-md-16">@friend.Address.ZipCode @friend.Address.City</div>
-            <div class="col-md-16">@friend.Address.Country</div>
-            </div>
+            @if(friend.Address != null)
+            {
+                <div class="col-md-4 themed-grid-col">
+                    @friend.Address.StreetAddress
+                    <div class="col-md-16">@friend.Address.ZipCode @friend.Address.City</div>
+                    <div class="col-md-16">@friend.Address.Country</div>
+                </div>
+            }
+            else { <div class="col-md-4 themed-grid-col">Unknown</div> }
             <div class="col-md-2 themed-grid-col">
-            <div class="col-md-16">Born: @friend.Birthday</div>
-            <div class="col-md-16">Pets: @friend.Pets.Count()</div>
-            <div class="col-md-16">Quotes: @friend.Quotes.Count()</div>
+                <div class="col-md-16">Born: @friend.Birthday</div>
+                <div class="col-md-16">Pets: @friend.Pets.Count()</div>
+                <div class="col-md-16">Quotes: @friend.Quotes.Count()</div>
             </div>
             <div class="col-md-2 themed-grid-col">
                 <a href="#view-friend" class="btn btn-primary btn-sm" type="button">View</a>
