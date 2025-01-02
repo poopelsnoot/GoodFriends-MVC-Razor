@@ -18,6 +18,13 @@ namespace MyApp.Namespace
 
             return Page();
         }
+
+        public async Task<IActionResult> OnPostDelete(Guid petId, Guid friendId)
+        {
+            await _service.DeletePetAsync(petId);
+
+            return await OnGet(friendId);
+        }
         
         public FriendDetailsModel(IFriendsService service)
         {
