@@ -19,9 +19,10 @@ namespace MyApp.Namespace
             return Page();
         }
 
-        public async Task<IActionResult> OnPostDelete(Guid petId, Guid friendId)
+        public async Task<IActionResult> OnPostDelete(Guid petId, Guid quoteId, Guid friendId)
         {
-            await _service.DeletePetAsync(petId);
+            if(petId != Guid.Parse("00000000-0000-0000-0000-000000000000")) { await _service.DeletePetAsync(petId); } 
+            if(quoteId != Guid.Parse("00000000-0000-0000-0000-000000000000")) { await _service.DeleteQuoteAsync(quoteId); }
 
             return await OnGet(friendId);
         }
