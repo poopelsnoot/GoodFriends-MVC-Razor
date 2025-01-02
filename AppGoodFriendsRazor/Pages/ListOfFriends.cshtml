@@ -46,7 +46,25 @@
                 <div class="col-md-2 themed-grid-col">
                     <a class="btn btn-primary btn-sm" type="button" asp-area="" asp-page="/FriendDetails" asp-route-FriendId="@friend.FriendId">View</a>
                     <a href="#add-edit-friend"  class="btn btn-secondary btn-sm" type="button">Edit</a>
-                    <button asp-page-handler="Delete" class="btn btn-danger btn-sm">Delete</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#dangerDelQModal-@friend.FriendId">Delete</button>
+                </div>
+            </div>
+
+            <div class="modal fade" id="dangerDelQModal-@friend.FriendId" tabindex="-1" aria-labelledby="softModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="softModalLabel">Delete friend with id @friend.FriendId</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @friend.FirstName @friend.LastName will be deleted. Are you sure?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" asp-page-handler="Delete" class="btn btn-primary btn-danger" data-bs-dismiss="modal">Delete</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>
