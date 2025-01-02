@@ -15,19 +15,15 @@ namespace MyApp.Namespace
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; } 
 
-        [BindProperty]
-        public string SearchFilter { get; set; } = null;
         public async Task<IActionResult> OnGet(string city, int pageNumber = 1)
         {
             GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
             ChosenCity = city;
             CurrentPage = pageNumber;
-            SearchFilter = Request.Query["search"];
-            if (SearchFilter == null) { SearchFilter = ""; }
 
-            if (city != "Unknown")
+            if (ChosenCity != "Unknown")
             {
-                var AddressesInCity = await _service.ReadAddressesAsync(true, false, city, 0, int.MaxValue);
+                var AddressesInCity = await _service.ReadAddressesAsync(true, false, ChosenCity, 0, int.MaxValue);
                 AllFriendsInCity = AddressesInCity.PageItems.SelectMany(a => a.Friends).ToList();
             }
             else
@@ -37,16 +33,16 @@ namespace MyApp.Namespace
             }
 
             TotalPages = (int)Math.Ceiling((double)AllFriendsInCity.Count() / 10);
-            FriendsList = AllFriendsInCity.Where(f => f.FirstName.Contains(SearchFilter) || f.LastName.Contains(SearchFilter)).Skip((CurrentPage-1) * 10).Take(10).ToList();
+            FriendsList = AllFriendsInCity.Skip((CurrentPage-1) * 10).Take(10).ToList();
 
             return Page();
         }
 
-        public IActionResult OnPostSearch()
+        public async Task<IActionResult> OnPostDelete(Guid id, string city, int pageNumber)
         {
-            FriendsList = AllFriendsInCity.Where(f => f.FirstName.Contains(SearchFilter) || f.LastName.Contains(SearchFilter)).Take(10).ToList();
+            await _service.DeleteFriendAsync(id);
 
-            return Page();
+            return await OnGet(city, pageNumber);
         }
 
         public ListOfFriendsModel(IFriendsService service)
