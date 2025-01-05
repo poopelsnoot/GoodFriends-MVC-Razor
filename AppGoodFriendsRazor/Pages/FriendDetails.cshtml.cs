@@ -12,10 +12,7 @@ namespace MyApp.Namespace
         public IFriend Friend { get; set; }
         public async Task<IActionResult> OnGet(Guid friendId)
         {
-            GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
-
             Friend = await _service.ReadFriendAsync(friendId, false);
-
             return Page();
         }
 
