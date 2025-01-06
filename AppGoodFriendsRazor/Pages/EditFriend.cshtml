@@ -10,7 +10,7 @@
         <div class="col-md-7 col-lg-8">
             <form class="needs-validation" method="post" novalidate>
                 <input asp-for="FriendToEdit.FriendId" type="hidden"/>
-                @* <input asp-for="AddressToEdit.AddressId" type="hidden"/> *@
+                <input asp-for="AddressToEdit.AddressId" type="hidden"/>
 
                 <div class="row g-3">
                     <div class="col-sm-6">
@@ -43,7 +43,7 @@
                         </div>
                     </div>
 
-                    @* <div class="row g-3 visible">
+                    <div class="row g-3 visible">
                         <div class="col-12">
                             <label for="address" class="form-label">Address</label>
                             <input type="text" class="form-control @(string.IsNullOrEmpty(Model.AddressToEdit.StreetAddress) ? "is-invalid" : "is-valid")" asp-for="AddressToEdit.StreetAddress" id="address" value="@Model.AddressToEdit.StreetAddress" required>
@@ -87,7 +87,7 @@
                                 </div>
                             }
                         </div>
-                    </div> *@
+                    </div>
                 </div>
 
                 <button class="w-100 btn btn-primary btn-lg my-4" type="submit" asp-page-handler="Save" >Save</button>

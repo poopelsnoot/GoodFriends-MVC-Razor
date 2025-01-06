@@ -13,24 +13,40 @@ namespace MyApp.Namespace
         
         [BindProperty]
         public FriendCUdto FriendToEdit { get; set; }
-        // [BindProperty]
-        // public AddressCUdto AddressToEdit { get; set; }
+        [BindProperty]
+        public AddressCUdto AddressToEdit { get; set; }
 
         public async Task<IActionResult> OnGet(Guid friendId)
         {
             var Friend = await _service.ReadFriendAsync(friendId, false);
-
             FriendToEdit = new FriendCUdto(Friend);
-            //AddressToEdit = new AddressCUdto(Friend.Address);
+
+            if(Friend.Address != null)
+            {
+                AddressToEdit = new AddressCUdto(Friend.Address);
+            }
+            else
+            {
+                AddressToEdit = new AddressCUdto();
+            }
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostSave()
         {
-            var testFriend = await _service.UpdateFriendAsync(FriendToEdit);
-            //await _service.UpdateAddressAsync(AddressToEdit);
-            
+            if (AddressToEdit.AddressId == null)
+            {
+                var newAddress = await _service.CreateAddressAsync(AddressToEdit);
+                AddressToEdit = new AddressCUdto(newAddress);
+            }
+            else
+            {
+                await _service.UpdateAddressAsync(AddressToEdit);
+            }
+
+            FriendToEdit.AddressId = AddressToEdit.AddressId;
+            await _service.UpdateFriendAsync(FriendToEdit);
             
             return Page();
         }
@@ -40,4 +56,5 @@ namespace MyApp.Namespace
             _service = service;
         }
     }
+
 }
