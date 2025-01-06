@@ -43,7 +43,14 @@
                         </div>
                     </div>
 
-                    <div class="row g-3 visible">
+                    <div class="col-sm-6"></div>
+
+                    <div class="col-sm-6">
+                        <label class="form-check-label" for="userHasAddress">I know the address</label>
+                        <input class="form-check-input" type="checkbox" asp-for="UserHasAddress" id="userHasAddress" onchange="toggleAddressFields()">
+                    </div>
+
+                    <div class="row g-3" id="addressFields" style="display: @(string.IsNullOrEmpty(Model.AddressToEdit.StreetAddress) ? "none" : "flex")">
                         <div class="col-12">
                             <label for="address" class="form-label">Address</label>
                             <input type="text" class="form-control @(string.IsNullOrEmpty(Model.AddressToEdit.StreetAddress) ? "is-invalid" : "is-valid")" asp-for="AddressToEdit.StreetAddress" id="address" value="@Model.AddressToEdit.StreetAddress" required>
@@ -88,8 +95,19 @@
                             }
                         </div>
                     </div>
-                </div>
 
+                    <script>
+                        function toggleAddressFields() {
+                            var checkBox = document.getElementById("userHasAddress");
+                            var addressFields = document.getElementById("addressFields");
+                            if (checkBox.checked) {
+                                addressFields.style.display = "flex";
+                            } else {
+                                addressFields.style.display = "none";
+                            }
+                        }
+                    </script>
+                </div>
                 <button class="w-100 btn btn-primary btn-lg my-4" type="submit" asp-page-handler="Save" >Save</button>
             </form>
         </div>
