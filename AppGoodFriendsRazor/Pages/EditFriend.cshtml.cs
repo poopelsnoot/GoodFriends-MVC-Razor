@@ -1,6 +1,7 @@
 using System.Diagnostics.Eventing.Reader;
 using DbModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
 using Models.DTO;
@@ -19,28 +20,44 @@ namespace MyApp.Namespace
         [BindProperty]
         public bool UserHasAddress { get; set; }
 
+        public string ErrorMessage { get; set; } = null;
+        public bool HasValidationErrors { get; set; }
+        public IEnumerable<string> ValidationErrorMsgs { get; set; }
+        public IEnumerable<KeyValuePair<string, ModelStateEntry>> InvalidKeys { get; set; }
+
         public async Task<IActionResult> OnGet(Guid friendId)
         {
-            var Friend = await _service.ReadFriendAsync(friendId, false);
-            FriendToEdit = new FriendCUdto(Friend);
-
-            if(Friend.Address != null)
+            try
             {
-                AddressToEdit = new AddressCUdto(Friend.Address);
-            }
-            else
-            {
-                AddressToEdit = new AddressCUdto();
-            }
+                var Friend = await _service.ReadFriendAsync(friendId, false);
+                FriendToEdit = new FriendCUdto(Friend);
 
-            UserHasAddress = !string.IsNullOrEmpty(Friend.Address?.StreetAddress);
+                if(Friend.Address != null)
+                {
+                    AddressToEdit = new AddressCUdto(Friend.Address);
+                }
+                else
+                {
+                    AddressToEdit = new AddressCUdto();
+                }
+
+                UserHasAddress = !string.IsNullOrEmpty(Friend.Address?.StreetAddress);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = e.Message;
+            }
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostSave()
         {
-
+            if (!IsValid())
+            {
+                return Page();
+            }
+    
             if (AddressToEdit.AddressId == null && UserHasAddress)
             {
                 var newAddress = await _service.CreateAddressAsync(AddressToEdit);
@@ -54,13 +71,33 @@ namespace MyApp.Namespace
             if(UserHasAddress) { FriendToEdit.AddressId = AddressToEdit.AddressId; }
             await _service.UpdateFriendAsync(FriendToEdit);
             
-            return Page();
+            return RedirectToPage("FriendDetails", new { friendId = FriendToEdit.FriendId });
         }
 
         public EditFriendModel(IFriendsService service)
         {
             _service = service;
         }
-    }
 
+        private bool IsValid(string[] validateOnlyKeys = null)
+        {
+            InvalidKeys = ModelState.Where(s => s.Value.ValidationState == ModelValidationState.Invalid);
+
+            if (validateOnlyKeys != null)
+            {
+                InvalidKeys = InvalidKeys.Where(s => validateOnlyKeys.Any(vk => vk == s.Key));
+            }
+            System.Console.WriteLine(InvalidKeys.Count());
+            if (!UserHasAddress)
+            {
+                InvalidKeys = InvalidKeys.Where(s =>
+                    !s.Key.StartsWith("AddressToEdit.", StringComparison.OrdinalIgnoreCase));
+            }
+            System.Console.WriteLine(InvalidKeys.Count());
+            ValidationErrorMsgs = InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
+            HasValidationErrors = InvalidKeys.Any();
+
+            return !HasValidationErrors;
+        }
+    }
 }

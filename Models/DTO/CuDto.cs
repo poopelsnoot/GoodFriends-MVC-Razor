@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 using System.Reflection.Emit;
 using System.Xml.Linq;
@@ -13,8 +14,9 @@ namespace Models.DTO;
 public class FriendCUdto
 {
     public virtual Guid? FriendId { get; set; }
-
+    [Required(ErrorMessage = "First name is required")]
     public virtual string FirstName { get; set; }
+    [Required(ErrorMessage = "Last name is required")]
     public virtual string LastName { get; set; }
 
     public virtual string Email { get; set; }
@@ -46,9 +48,13 @@ public class AddressCUdto
 {
     public virtual Guid? AddressId { get; set; }
 
+    [Required(ErrorMessage = "Street address is required")]
     public virtual string StreetAddress { get; set; }
+    [Required(ErrorMessage = "Zip code is required")]
     public virtual int ZipCode { get; set; }
+    [Required(ErrorMessage = "City is required")]
     public virtual string City { get; set; }
+    [Required(ErrorMessage = "Country is required")]
     public virtual string Country { get; set; }
 
     public virtual List<Guid> FriendsId { get; set; } = null;
