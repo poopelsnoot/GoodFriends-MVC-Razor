@@ -21,6 +21,9 @@ namespace MyApp.Namespace
             if (country != "Unknown") 
             {
                 var listAddressesInCountry = await _service.ReadAddressesAsync(true, false, country, 0, int.MaxValue);
+                var unseededAddressesInCountry = await _service.ReadAddressesAsync(false, false, country, 0, int.MaxValue);
+                listAddressesInCountry.PageItems.AddRange(unseededAddressesInCountry.PageItems);
+
                 var listCitiesInCountry = listAddressesInCountry.PageItems.Where(f => f.Country == country).Select(f => f.City).Distinct().ToList();
                 foreach (var city in listCitiesInCountry)
                 {

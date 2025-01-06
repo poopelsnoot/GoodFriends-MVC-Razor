@@ -24,11 +24,17 @@ namespace MyApp.Namespace
             if (ChosenCity != "Unknown")
             {
                 var AddressesInCity = await _service.ReadAddressesAsync(true, false, ChosenCity, 0, int.MaxValue);
+                var unseededAddressesInCity = await _service.ReadAddressesAsync(false, false, ChosenCity, 0, int.MaxValue);
+                AddressesInCity.PageItems.AddRange(unseededAddressesInCity.PageItems);
+
                 AllFriendsInCity = AddressesInCity.PageItems.SelectMany(a => a.Friends).ToList();
             }
             else
             {
                 var allFriends = await _service.ReadFriendsAsync(true, false, "", 0, int.MaxValue);
+                var unseededFriends = await _service.ReadFriendsAsync(false, false, "", 0, int.MaxValue);
+                allFriends.PageItems.AddRange(unseededFriends.PageItems);
+                
                 AllFriendsInCity = allFriends.PageItems.Where(f => f.Address == null).ToList();
             }
 
