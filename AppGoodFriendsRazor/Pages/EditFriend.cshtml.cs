@@ -30,7 +30,7 @@ namespace MyApp.Namespace
             try
             {
                 var Friend = await _service.ReadFriendAsync(friendId, false);
-                FriendToEdit = new FriendCUdto(Friend);
+                FriendToEdit = new FriendCUdto(Friend) {PetsId = Friend.Pets.Select(p => p.PetId).ToList(), QuotesId = Friend.Quotes.Select(q => q.QuoteId).ToList()};
 
                 if(Friend.Address != null)
                 {
@@ -51,7 +51,7 @@ namespace MyApp.Namespace
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSave()
+        public async Task<IActionResult> OnPostSave(List<Guid> petsId, List<Guid> quotesId)
         {
             if (!IsValid())
             {
@@ -69,6 +69,9 @@ namespace MyApp.Namespace
             }
 
             if(UserHasAddress) { FriendToEdit.AddressId = AddressToEdit.AddressId; }
+            FriendToEdit.PetsId = petsId;
+            FriendToEdit.QuotesId = quotesId;
+
             await _service.UpdateFriendAsync(FriendToEdit);
             
             return RedirectToPage("FriendDetails", new { friendId = FriendToEdit.FriendId });
@@ -87,13 +90,27 @@ namespace MyApp.Namespace
             {
                 InvalidKeys = InvalidKeys.Where(s => validateOnlyKeys.Any(vk => vk == s.Key));
             }
-            System.Console.WriteLine(InvalidKeys.Count());
             if (!UserHasAddress)
             {
                 InvalidKeys = InvalidKeys.Where(s =>
                     !s.Key.StartsWith("AddressToEdit.", StringComparison.OrdinalIgnoreCase));
             }
-            System.Console.WriteLine(InvalidKeys.Count());
+
+
+            foreach (var key in InvalidKeys)
+            {
+                System.Console.WriteLine(key.Key);
+            }
+
+            InvalidKeys = InvalidKeys.Where(s => 
+                !s.Key.StartsWith("pets", StringComparison.OrdinalIgnoreCase) &&
+                !s.Key.StartsWith("quotes", StringComparison.OrdinalIgnoreCase));
+            
+            foreach (var key in InvalidKeys)
+            {
+                System.Console.WriteLine(key.Key);
+            }
+
             ValidationErrorMsgs = InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
             HasValidationErrors = InvalidKeys.Any();
 
