@@ -1,0 +1,25 @@
+﻿@{
+}
+
+<div class="container px-4 py-4" id="friends-by-city">
+    <h2 class="pb-2 border-bottom">Friends in @Model.ChosenCountry</h2>
+    <p>Click in on a city below to see my friends living in that city.</p>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 py-5">
+
+        @foreach (var city in Model.FriendsByCity.Keys)
+        {
+            if(!(Model.FriendsByCity[city] == 0))
+            {
+                <div class="col d-flex align-items-start">
+                    <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#home"/></svg>
+                    <div>
+                        <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">@city</h3>
+                        <p>@Model.FriendsByCity[city] friends and @Model.PetsByCity[city] pets.</p>
+                        <a class="btn btn-primary" asp-area="" asp-page="/ListOfFriends" asp-route-city="@city">See friends</a>    
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

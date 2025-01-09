@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using AppStudiesMVC.Models;
+using AppGoodFriendsMVC.Models;
 using Services;
 using System.Net.WebSockets;
 
-namespace AppStudiesMVC.Controllers;
+namespace AppGoodFriendsMVC.Controllers;
 
 public class HomeController : Controller
 {
@@ -20,7 +20,6 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        var nr = _service.NrOfQuotes();
         return View();
     }
 

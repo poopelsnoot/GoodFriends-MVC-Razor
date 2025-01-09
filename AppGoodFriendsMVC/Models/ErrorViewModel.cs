@@ -1,4 +1,4 @@
-﻿namespace AppStudiesMVC.Models;
+﻿namespace AppGoodFriendsMVC.Models;
 
 public class ErrorViewModel
 {

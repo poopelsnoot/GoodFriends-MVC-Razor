@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using AppStudiesMVC.Models;
+using AppGoodFriendsMVC.Models;
 using Services;
 
-namespace AppStudiesMVC.Controllers;
+namespace AppGoodFriendsMVC.Controllers;
 
-public class ModelController : Controller
+public class FriendController : Controller
 {
-    private readonly ILogger<ModelController> _logger;
+    private readonly ILogger<FriendController> _logger;
     IQuoteService _service = null;
     readonly LatinService _latinService;
 
-    public ModelController(ILogger<ModelController> logger, IQuoteService service, LatinService latinService)
+    public FriendController(ILogger<FriendController> logger, IQuoteService service, LatinService latinService)
     {
         _service = service;
         _logger = logger;
@@ -32,7 +32,7 @@ public class ModelController : Controller
 
     //Will execute on a Get request
     [HttpGet]
-    [Route("/Model/Search")]
+    [Route("/Friend/Search")]
     [Route("quotes/{search?}")]
     public IActionResult Search(string search, int pagenr)
     {

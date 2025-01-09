@@ -4,7 +4,7 @@ using AppStudies.SeidoHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace AppStudiesMVC.Models
+namespace AppGoodFriendsMVC.Models
 {
         #region Input Model
         //InputModel (IM) is locally declared classes that contains ONLY the properties of the Model

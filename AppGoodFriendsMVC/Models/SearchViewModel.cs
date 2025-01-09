@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
 
-namespace AppStudiesMVC.Models
+namespace AppGoodFriendsMVC.Models
 {
 	public class SearchViewModel
 	{

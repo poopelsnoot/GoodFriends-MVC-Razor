@@ -1,7 +1,7 @@
 ﻿using System;
 using Models;
 
-namespace AppStudiesMVC.Models
+namespace AppGoodFriendsMVC.Models
 {
 	public class ModelListViewModel
 	{

@@ -4,7 +4,7 @@ using AppStudies.SeidoHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace AppStudiesMVC.Models
+namespace AppGoodFriendsMVC.Models
 {
     public enum StatusIM { Unknown, Unchanged, Inserted, Modified, Deleted }
 

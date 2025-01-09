@@ -1,10 +1,10 @@
-    using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using AppStudies.SeidoHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
-namespace AppStudiesMVC.Models
+namespace AppGoodFriendsMVC.Models
 {
     public class InputSimpleViewModel
     {
