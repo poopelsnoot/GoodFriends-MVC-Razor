@@ -104,14 +104,14 @@
                             }
                         </script>
                     </div>
-                    <button class="w-100 btn btn-primary btn-lg my-4" type="submit" asp-route-petsId="@Model.FriendToEdit.PetsId" asp-route-quotesId="@Model.FriendToEdit.QuotesId" asp-page-handler="Save" >Save</button>
+                    <button class="w-100 btn btn-primary btn-lg my-4" type="submit" asp-controller="Friend" asp-action="SaveFriendEdit" asp-route-petsId="@Model.FriendToEdit.PetsId" asp-route-quotesId="@Model.FriendToEdit.QuotesId">Save</button>
                 </form>
             </div>
         </div>
     }
 </div>
 
-@section script 
+@section Scripts 
 {
     <partial name="_ValidationScriptsPartial" />
 }

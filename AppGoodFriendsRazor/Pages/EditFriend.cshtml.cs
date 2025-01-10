@@ -97,21 +97,10 @@ namespace MyApp.Namespace
                     !s.Key.StartsWith("AddressToEdit.", StringComparison.OrdinalIgnoreCase));
             }
 
-
-            foreach (var key in InvalidKeys)
-            {
-                System.Console.WriteLine(key.Key);
-            }
-
             InvalidKeys = InvalidKeys.Where(s => 
                 !s.Key.StartsWith("pets", StringComparison.OrdinalIgnoreCase) &&
                 !s.Key.StartsWith("quotes", StringComparison.OrdinalIgnoreCase));
             
-            foreach (var key in InvalidKeys)
-            {
-                System.Console.WriteLine(key.Key);
-            }
-
             ValidationErrorMsgs = InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
             HasValidationErrors = InvalidKeys.Any();
 
