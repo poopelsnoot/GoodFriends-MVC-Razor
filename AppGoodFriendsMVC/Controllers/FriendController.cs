@@ -13,9 +13,27 @@ public class FriendController : Controller
         _logger = logger;
     }
 
-    public IActionResult FriendsByCountry()
+    public IActionResult FriendsByCity()
     {
-        var vw = new FriendsByCountryViewModel();
+        var vw = new FriendsByCityViewModel();
+        return View(vw);
+    }
+
+    public IActionResult FriendDetails()
+    {
+        var vw = new FriendDetailsViewModel();
+        return View(vw);
+    }
+
+    public IActionResult ListOfFriends()
+    {
+        var vw = new ListOfFriendsViewModel();
+        return View(vw);
+    }
+
+    public IActionResult EditFriend()
+    {
+        var vw = new EditFriendViewModel();
         return View(vw);
     }
 

@@ -2,12 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <ProjectReference Include="..\Configuration\Configuration.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\DbContext\DbContext.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
@@ -17,5 +22,14 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
-
+  <ItemGroup>
+    <None Remove="Views\Model\" />
+    <None Remove="SeidoHelpers\" />
+    <None Remove="Views\FormValidation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Model\" />
+    <Folder Include="SeidoHelpers\" />
+    <Folder Include="Views\FormValidation\" />
+  </ItemGroup>
 </Project>
