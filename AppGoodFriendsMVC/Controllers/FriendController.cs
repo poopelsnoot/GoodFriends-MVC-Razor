@@ -4,6 +4,7 @@ using AppGoodFriendsMVC.Models;
 using Models.DTO;
 using Services;
 using Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AppGoodFriendsMVC.Controllers;
 
@@ -149,28 +150,67 @@ public class FriendController : Controller
     [HttpPost]
     public async Task<IActionResult> SaveFriendEdit(List<Guid> petsId, List<Guid> quotesId)
     {
+        var vw = new EditFriendViewModel();
+
         if (!IsValid())
         {
-            return Page();
+            return await EditFriend(Guid.Parse(vw.FriendToEdit.FriendId.ToString()));
         }
 
-        if (AddressToEdit.AddressId == null && UserHasAddress)
+        if (vw.AddressToEdit.AddressId == null && vw.UserHasAddress)
         {
-            var newAddress = await _service.CreateAddressAsync(AddressToEdit);
-            AddressToEdit = new AddressCUdto(newAddress);
+            var newAddress = await _friendService.CreateAddressAsync(vw.AddressToEdit);
+            vw.AddressToEdit = new AddressCUdto(newAddress);
         }
-        else if (AddressToEdit.AddressId != null && UserHasAddress)
+        else if (vw.AddressToEdit.AddressId != null && vw.UserHasAddress)
         {
-            await _service.UpdateAddressAsync(AddressToEdit);
+            await _friendService.UpdateAddressAsync(vw.AddressToEdit);
         }
 
-        if(UserHasAddress) { FriendToEdit.AddressId = AddressToEdit.AddressId; }
+        if(vw.UserHasAddress) { vw.FriendToEdit.AddressId = vw.AddressToEdit.AddressId; }
         
-        FriendToEdit.PetsId = petsId;
-        FriendToEdit.QuotesId = quotesId;
+        vw.FriendToEdit.PetsId = petsId;
+        vw.FriendToEdit.QuotesId = quotesId;
 
-        await _service.UpdateFriendAsync(FriendToEdit);
-        return await ListOfFriends(city, pageNumber);
+        await _friendService.UpdateFriendAsync(vw.FriendToEdit);
+        return RedirectToAction("FriendDetails", new { friendId = vw.FriendToEdit.FriendId });
+    }
+
+    private bool IsValid(string[] validateOnlyKeys = null)
+    {
+        var vw = new EditFriendViewModel();
+
+        vw.InvalidKeys = ModelState.Where(s => s.Value.ValidationState == ModelValidationState.Invalid);
+
+        if (validateOnlyKeys != null)
+        {
+            vw.InvalidKeys = vw.InvalidKeys.Where(s => validateOnlyKeys.Any(vk => vk == s.Key));
+        }
+        if (!vw.UserHasAddress)
+        {
+            vw.InvalidKeys = vw.InvalidKeys.Where(s =>
+                !s.Key.StartsWith("AddressToEdit.", StringComparison.OrdinalIgnoreCase));
+        }
+
+
+        foreach (var key in vw.InvalidKeys)
+        {
+            System.Console.WriteLine(key.Key);
+        }
+
+        vw.InvalidKeys = vw.InvalidKeys.Where(s => 
+            !s.Key.StartsWith("pets", StringComparison.OrdinalIgnoreCase) &&
+            !s.Key.StartsWith("quotes", StringComparison.OrdinalIgnoreCase));
+        
+        foreach (var key in vw.InvalidKeys)
+        {
+            System.Console.WriteLine(key.Key);
+        }
+
+        vw.ValidationErrorMsgs = vw.InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
+        vw.HasValidationErrors = vw.InvalidKeys.Any();
+
+        return !vw.HasValidationErrors;
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

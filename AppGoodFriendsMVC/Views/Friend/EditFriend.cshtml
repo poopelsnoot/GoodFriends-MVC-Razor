@@ -44,16 +44,19 @@
                         <div class="col-sm-6">
                             <label for="firstName" class="form-label">First name</label>
                             <input type="text" class="form-control" asp-for="FriendToEdit.FirstName" id="firstName" placeholder="" value="@Model.FriendToEdit.FirstName" required>
+                            <span asp-validation-for="FriendToEdit.FirstName" class="invalid-feedback"></span>
                         </div>
 
                         <div class="col-sm-6">
                             <label for="lastName" class="form-label">Last name</label>
                             <input type="text" class="form-control" asp-for="FriendToEdit.LastName" id="lastName" placeholder="" value="@Model.FriendToEdit.LastName" required>
+                            <span asp-validation-for="FriendToEdit.LastName" class="invalid-feedback"></span>
                         </div>
                     
                         <div class="col-sm-6">
                             <label for="birthday" class="form-label">Birthday <span class="text-body-secondary">(Optional)</span></label>
                             <input type="date" class="form-control" asp-for="FriendToEdit.Birthday" id="birthday" placeholder="" value="@(Model.FriendToEdit.Birthday.HasValue ? Model.FriendToEdit.Birthday.Value.ToString("yyyy-MM-dd") : "")">
+                            <span asp-validation-for="FriendToEdit.Birthday" class="invalid-feedback"></span>
                         </div>
 
                         <div class="col-sm-6"></div>
@@ -67,21 +70,25 @@
                             <div class="col-12">
                                 <label for="address" class="form-label">Address</label>
                                 <input type="text" class="form-control" asp-for="AddressToEdit.StreetAddress" id="address" value="@Model.AddressToEdit.StreetAddress">
+                                <span asp-validation-for="AddressToEdit.StreetAddress" class="invalid-feedback"></span>
                             </div>
 
                             <div class="col-md-3">
                                 <label for="zip" class="form-label">Zip</label>
                                 <input type="text" class="form-control" asp-for="AddressToEdit.ZipCode" id="zip" placeholder="" value="@Model.AddressToEdit.ZipCode">
+                                <span asp-validation-for="AddressToEdit.ZipCode" class="invalid-feedback"></span>
                             </div>
 
                             <div class="col-md-4">
                                 <label for="city" class="form-label">City</label>
                                 <input type="text" class="form-control" asp-for="AddressToEdit.City" id="city" value="@Model.AddressToEdit.City">
+                                <span asp-validation-for="AddressToEdit.City" class="invalid-feedback"></span>
                             </div>
 
                             <div class="col-md-5">
                                 <label for="country" class="form-label">Country</label>
                                 <input type="text" class="form-control" asp-for="AddressToEdit.Country" id="country" value="@Model.AddressToEdit.Country">
+                                <span asp-validation-for="AddressToEdit.Country" class="invalid-feedback"></span>
                             </div>
                         </div>
 
@@ -103,3 +110,8 @@
         </div>
     }
 </div>
+
+@section script 
+{
+    <partial name="_ValidationScriptsPartial" />
+}
