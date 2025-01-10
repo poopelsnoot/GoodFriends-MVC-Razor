@@ -69,6 +69,7 @@ namespace MyApp.Namespace
             }
 
             if(UserHasAddress) { FriendToEdit.AddressId = AddressToEdit.AddressId; }
+            
             FriendToEdit.PetsId = petsId;
             FriendToEdit.QuotesId = quotesId;
 

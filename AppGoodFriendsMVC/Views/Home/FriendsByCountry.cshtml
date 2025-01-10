@@ -10,7 +10,7 @@
 
         @foreach (var country in Model.FriendsByCountry.Keys)
         {   
-            <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="FriendsByCity" asp-route-country="@country">
+            <a class="text-decoration-none" asp-area="" asp-controller="Friend" asp-action="FriendsByCity" asp-route-country="@country">
                 <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('@Url.Content("~/img/" + country + ".jpg")');">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white" style="text-shadow: 1px 1px 2px black, 0 0 1em black, 0 0 0.2em black;">

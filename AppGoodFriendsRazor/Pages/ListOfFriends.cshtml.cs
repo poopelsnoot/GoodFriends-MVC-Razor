@@ -17,7 +17,6 @@ namespace MyApp.Namespace
 
         public async Task<IActionResult> OnGet(string city, int pageNumber = 1)
         {
-            GstUsrInfoAllDto dbInfo = await _service.InfoAsync;
             ChosenCity = city;
             CurrentPage = pageNumber;
 
