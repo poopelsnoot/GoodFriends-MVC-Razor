@@ -78,7 +78,7 @@ public class FriendController : Controller
         return await FriendDetails(friendId);
     }
 
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> ListOfFriends(string city, int pageNumber = 1)
     {
         var vw = new ListOfFriendsViewModel();
@@ -118,10 +118,59 @@ public class FriendController : Controller
     }
 
     [HttpGet]
-    public IActionResult EditFriend()
+    public async Task<IActionResult> EditFriend(Guid friendId)
     {
         var vw = new EditFriendViewModel();
+
+        try
+        {
+            var Friend = await _friendService.ReadFriendAsync(friendId, false);
+            vw.FriendToEdit = new FriendCUdto(Friend) {PetsId = Friend.Pets.Select(p => p.PetId).ToList(), QuotesId = Friend.Quotes.Select(q => q.QuoteId).ToList()};
+
+            if(Friend.Address != null)
+            {
+                vw.AddressToEdit = new AddressCUdto(Friend.Address);
+            }
+            else
+            {
+                vw.AddressToEdit = new AddressCUdto();
+            }
+
+            vw.UserHasAddress = !string.IsNullOrEmpty(Friend.Address?.StreetAddress);
+        }
+        catch (Exception e)
+        {
+            vw.ErrorMessage = e.Message;
+        }
+
         return View(vw);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveFriendEdit(List<Guid> petsId, List<Guid> quotesId)
+    {
+        if (!IsValid())
+        {
+            return Page();
+        }
+
+        if (AddressToEdit.AddressId == null && UserHasAddress)
+        {
+            var newAddress = await _service.CreateAddressAsync(AddressToEdit);
+            AddressToEdit = new AddressCUdto(newAddress);
+        }
+        else if (AddressToEdit.AddressId != null && UserHasAddress)
+        {
+            await _service.UpdateAddressAsync(AddressToEdit);
+        }
+
+        if(UserHasAddress) { FriendToEdit.AddressId = AddressToEdit.AddressId; }
+        
+        FriendToEdit.PetsId = petsId;
+        FriendToEdit.QuotesId = quotesId;
+
+        await _service.UpdateFriendAsync(FriendToEdit);
+        return await ListOfFriends(city, pageNumber);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
