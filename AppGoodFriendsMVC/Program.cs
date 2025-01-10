@@ -1,7 +1,21 @@
+using Services;
+using Configuration;
+using DbContext;
+using DbRepos;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Configuration.AddApplicationSecrets("../Configuration/Configuration.csproj");
+builder.Services.AddDatabaseConnections(builder.Configuration);
+builder.Services.AddDatabaseConnectionsDbContext();
+
+//Inject Custom logger
+builder.Services.AddSingleton<ILoggerProvider, InMemoryLoggerProvider>();
+builder.Services.AddScoped<FriendsDbRepos>();
+builder.Services.AddScoped<IFriendsService, FriendsServiceDb>();
 
 var app = builder.Build();
 
