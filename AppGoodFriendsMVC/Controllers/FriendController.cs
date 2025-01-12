@@ -111,11 +111,11 @@ public class FriendController : Controller
         return View(vw);
     }
 
-    [HttpDelete]
+    [HttpPost]
     public async Task<IActionResult> FriendDelete(Guid id, string city, int pageNumber)
     {
         await _friendService.DeleteFriendAsync(id);
-        return await ListOfFriends(city, pageNumber);
+        return RedirectToAction("ListOfFriends", new { city = city, pageNumber = pageNumber });
     }
 
     [HttpGet]
