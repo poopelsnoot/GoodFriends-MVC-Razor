@@ -12,7 +12,6 @@ public class FriendController : Controller
 {
     private readonly ILogger<FriendController> _logger;
     private readonly IFriendsService _friendService;
-    public EditFriendViewModel _editFriendViewModel;
 
     public FriendController(ILogger<FriendController> logger, IFriendsService friendService)
     {
@@ -71,13 +70,13 @@ public class FriendController : Controller
         return View(vw);
     }
 
-    [HttpDelete]
+    [HttpPost]
     public async Task<IActionResult> PetQuoteDelete(Guid petId, Guid quoteId, Guid friendId)
     {
         if(petId != Guid.Parse("00000000-0000-0000-0000-000000000000")) { await _friendService.DeletePetAsync(petId); } 
         if(quoteId != Guid.Parse("00000000-0000-0000-0000-000000000000")) { await _friendService.DeleteQuoteAsync(quoteId); }
 
-        return await FriendDetails(friendId);
+        return RedirectToAction("FriendDetails", new { friendId = friendId });
     }
 
     [HttpGet]
@@ -122,81 +121,81 @@ public class FriendController : Controller
     [HttpGet]
     public async Task<IActionResult> EditFriend(Guid friendId)
     {
-        _editFriendViewModel = new EditFriendViewModel();
+        var vw = new EditFriendViewModel();
 
         try
         {
             var Friend = await _friendService.ReadFriendAsync(friendId, false);
-            _editFriendViewModel.FriendToEdit = new FriendCUdto(Friend) {PetsId = Friend.Pets.Select(p => p.PetId).ToList(), QuotesId = Friend.Quotes.Select(q => q.QuoteId).ToList()};
+            vw.FriendToEdit = new FriendCUdto(Friend) {PetsId = Friend.Pets.Select(p => p.PetId).ToList(), QuotesId = Friend.Quotes.Select(q => q.QuoteId).ToList()};
 
             if(Friend.Address != null)
             {
-                _editFriendViewModel.AddressToEdit = new AddressCUdto(Friend.Address);
+                vw.AddressToEdit = new AddressCUdto(Friend.Address);
             }
             else
             {
-                _editFriendViewModel.AddressToEdit = new AddressCUdto();
+                vw.AddressToEdit = new AddressCUdto();
             }
 
-            _editFriendViewModel.UserHasAddress = !string.IsNullOrEmpty(Friend.Address?.StreetAddress);
+            vw.UserHasAddress = !string.IsNullOrEmpty(Friend.Address?.StreetAddress);
         }
         catch (Exception e)
         {
-            _editFriendViewModel.ErrorMessage = e.Message;
+            vw.ErrorMessage = e.Message;
         }
 
-        return View(_editFriendViewModel);
+        return View(vw);
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveFriendEdit(List<Guid> petsId, List<Guid> quotesId)
+    public async Task<IActionResult> SaveFriendEdit(EditFriendViewModel vw ,List<Guid> petsId, List<Guid> quotesId)
     {
-        if (!IsValid())
+        if (!IsValid(vw))
         {
-            return await EditFriend(Guid.Parse(_editFriendViewModel.FriendToEdit.FriendId.ToString()));
+            return await EditFriend(Guid.Parse(vw.FriendToEdit.FriendId.ToString()));
         }
 
-        if (_editFriendViewModel.AddressToEdit.AddressId == null && _editFriendViewModel.UserHasAddress)
+        if (vw.AddressToEdit.AddressId == null && vw.UserHasAddress)
         {
-            var newAddress = await _friendService.CreateAddressAsync(_editFriendViewModel.AddressToEdit);
-            _editFriendViewModel.AddressToEdit = new AddressCUdto(newAddress);
+            var newAddress = await _friendService.CreateAddressAsync(vw.AddressToEdit);
+            vw.AddressToEdit = new AddressCUdto(newAddress);
         }
-        else if (_editFriendViewModel.AddressToEdit.AddressId != null && _editFriendViewModel.UserHasAddress)
+        else if (vw.AddressToEdit.AddressId != null && vw.UserHasAddress)
         {
-            await _friendService.UpdateAddressAsync(_editFriendViewModel.AddressToEdit);
+            await _friendService.UpdateAddressAsync(vw.AddressToEdit);
         }
 
-        if(_editFriendViewModel.UserHasAddress) { _editFriendViewModel.FriendToEdit.AddressId = _editFriendViewModel.AddressToEdit.AddressId; }
+        if(vw.UserHasAddress) { vw.FriendToEdit.AddressId = vw.AddressToEdit.AddressId; }
         
-        _editFriendViewModel.FriendToEdit.PetsId = petsId;
-        _editFriendViewModel.FriendToEdit.QuotesId = quotesId;
+        vw.FriendToEdit.PetsId = petsId;
+        vw.FriendToEdit.QuotesId = quotesId;
 
-        await _friendService.UpdateFriendAsync(_editFriendViewModel.FriendToEdit);
-        return RedirectToAction("FriendDetails", new { friendId = _editFriendViewModel.FriendToEdit.FriendId });
+        await _friendService.UpdateFriendAsync(vw.FriendToEdit);
+        return RedirectToAction("FriendDetails", new { friendId = vw.FriendToEdit.FriendId });
     }
 
-    private bool IsValid(string[] validateOnlyKeys = null)
+    private bool IsValid(EditFriendViewModel vw, string[] validateOnlyKeys = null)
     {
-        _editFriendViewModel.InvalidKeys = ModelState.Where(s => s.Value.ValidationState == ModelValidationState.Invalid);
+        vw.InvalidKeys = ModelState.Where(s => s.Value.ValidationState == ModelValidationState.Invalid);
 
         if (validateOnlyKeys != null)
         {
-            _editFriendViewModel.InvalidKeys = _editFriendViewModel.InvalidKeys.Where(s => validateOnlyKeys.Any(vk => vk == s.Key));
+            vw.InvalidKeys = vw.InvalidKeys.Where(s => validateOnlyKeys.Any(vk => vk == s.Key));
         }
-        if (!_editFriendViewModel.UserHasAddress)
+        if (!vw.UserHasAddress)
         {
-            _editFriendViewModel.InvalidKeys = _editFriendViewModel.InvalidKeys.Where(s =>
+            vw.InvalidKeys = vw.InvalidKeys.Where(s =>
                 !s.Key.StartsWith("AddressToEdit.", StringComparison.OrdinalIgnoreCase));
         }
 
-        _editFriendViewModel.InvalidKeys = _editFriendViewModel.InvalidKeys.Where(s => 
+        vw.InvalidKeys = vw.InvalidKeys.Where(s => 
             !s.Key.StartsWith("pets", StringComparison.OrdinalIgnoreCase) &&
             !s.Key.StartsWith("quotes", StringComparison.OrdinalIgnoreCase));
 
-        _editFriendViewModel.ValidationErrorMsgs = _editFriendViewModel.InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
-        _editFriendViewModel.HasValidationErrors = _editFriendViewModel.InvalidKeys.Any();
+        vw.ValidationErrorMsgs = vw.InvalidKeys.SelectMany(e => e.Value.Errors).Select(e => e.ErrorMessage);
+        vw.HasValidationErrors = vw.InvalidKeys.Any();
 
-        return !_editFriendViewModel.HasValidationErrors;
+        return !vw.HasValidationErrors;
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
