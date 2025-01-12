@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Models;
-using Models.DTO;
 using Services;
 
 namespace MyApp.Namespace
